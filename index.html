@@ -1,354 +1,118 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>食品饮料 AI 落地实践</title>
-<style>
-:root{--pri:#0F7B6C;--pl:#12A08A;--pd:#0A5C51;--acc:#E8563A;--ac2:#F59E0B;--bl:#1A8FBF;--pu:#8B5CF6;--bg:#F4F8F7;--cd:#fff;--tx:#1A2B3C;--mu:#6B7C8D;--bd:#D8E4E2;--gw:rgba(15,123,108,.07)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--tx);background:var(--bg);line-height:1.72;overflow-x:hidden}
-body::before{content:"";position:fixed;top:-40%;right:-25%;width:700px;height:700px;background:radial-gradient(circle,rgba(15,123,108,.05),transparent 70%);border-radius:50%;pointer-events:none;z-index:0}
-.ct{max-width:1060px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-.hd{padding:48px 0 32px;text-align:center;position:relative}
-.hd::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100px;height:3px;background:linear-gradient(90deg,transparent,var(--pri),transparent);border-radius:2px}
-.hd h1{font-size:34px;font-weight:800;background:linear-gradient(135deg,var(--pd),var(--pl));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hd .sub{font-size:16px;color:var(--mu);margin-top:4px}
-.hd .meta{font-size:12px;color:#b0bcb8;margin-top:18px;letter-spacing:1px}
-section{padding:40px 0}
-.sh{margin-bottom:24px}.sh h2{font-size:21px;font-weight:700;color:var(--pd);display:flex;align-items:center;gap:8px}.sh h2 .d{width:7px;height:7px;border-radius:50%;background:var(--pri)}.sh p{font-size:13px;color:var(--mu);margin-top:3px;padding-left:15px}
-a{color:var(--pri);text-decoration:none;font-weight:600}a:hover{text-decoration:underline}
-/* Pan */
-.pan{background:var(--cd);border-radius:16px;padding:28px 24px;box-shadow:0 1px 16px var(--gw);border:1px solid var(--bd);overflow:hidden;position:relative}
-.pan::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pri),var(--pl),var(--bl),var(--ac2),var(--acc),var(--pu))}
-.chain{display:flex;align-items:center;margin:16px 0 24px;position:relative}
-.chain::before{content:"";position:absolute;top:50%;left:20px;right:20px;height:2px;background:linear-gradient(90deg,var(--pri)20%,var(--bl)40%,var(--acc)60%,var(--pu)80%,var(--ac2));opacity:.18}
-.cn0{flex:1;text-align:center;z-index:1}.cn0 .ci0{width:44px;height:44px;border-radius:50%;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.1)}.cn0 .cl0{font-size:11px;font-weight:600}
-.c1 .ci0{background:linear-gradient(135deg,#0F7B6C,#12A08A)}.c2 .ci0{background:linear-gradient(135deg,#1A8FBF,#2BB5E0)}.c3 .ci0{background:linear-gradient(135deg,#E8563A,#F07858)}.c4 .ci0{background:linear-gradient(135deg,#8B5CF6,#A78BFA)}.c5 .ci0{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
-.ca0{width:18px;text-align:center;color:var(--pl);font-size:12px;opacity:.35;flex-shrink:0;z-index:1}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.fb{border-radius:12px;padding:18px 18px 14px;border:1px solid var(--bd);position:relative;overflow:hidden;transition:box-shadow .2s}.fb:hover{box-shadow:0 4px 20px var(--gw)}
-.fb::before{content:"";position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:2px}
-.fb.sp::before{background:linear-gradient(180deg,#0F7B6C,#12A08A)}.fb.sp{background:linear-gradient(135deg,#F0FAF8,#fff)}
-.fb.ct2::before{background:linear-gradient(180deg,#1A8FBF,#2BB5E0)}.fb.ct2{background:linear-gradient(135deg,#F0F7FC,#fff)}
-.fb.tf::before{background:linear-gradient(180deg,#E8563A,#F07858)}.fb.tf{background:linear-gradient(135deg,#FEF5F3,#fff)}
-.fb.bp::before{background:linear-gradient(180deg,#8B5CF6,#A78BFA)}.fb.bp{background:linear-gradient(135deg,#F5F3FF,#fff)}
-.ft0{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;color:#fff;margin-bottom:12px}
-.sp .ft0{background:linear-gradient(90deg,#0F7B6C,#12A08A)}.ct2 .ft0{background:linear-gradient(90deg,#1A8FBF,#2BB5E0)}.tf .ft0{background:linear-gradient(90deg,#E8563A,#F07858)}.bp .ft0{background:linear-gradient(90deg,#8B5CF6,#A78BFA)}
-.si{margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--bd)}.si:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
-.si .sn{font-size:14px;font-weight:700;margin-bottom:3px}.si .sk{font-size:12px;color:var(--mu);margin-bottom:2px}.si .sk b{color:var(--tx)}
-.si .sv{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.si .sv span{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;display:inline-flex;align-items:center;gap:3px}
-.sp .sv span{background:#E6F7F4;color:#0A5C51}.ct2 .sv span{background:#E6F3FA;color:#0E6A8E}.tf .sv span{background:#FEF0ED;color:#B53D24}.bp .sv span{background:#F0ECFE;color:#6D3FC4}
-.si .slink{margin-top:6px;font-size:11px}
-.si .slink a{font-weight:500;border-bottom:1px dashed var(--pri);padding-bottom:1px}
-.steps3{display:flex;gap:6px;margin-top:8px}.s3{flex:1;background:var(--bg);border-radius:7px;padding:8px;text-align:center;border:1px solid var(--bd);font-size:10px}.s3 .s3n{font-weight:800;color:var(--pri);font-size:12px;margin-bottom:2px}.s3 .s3t{font-weight:600;font-size:11px;margin-bottom:1px}.s3a{display:flex;align-items:center;font-size:13px;color:var(--pl);width:10px;flex-shrink:0;justify-content:center}
-/* Skill */
-.skill-ov{background:var(--cd);border-radius:14px;padding:24px;border:1px solid var(--bd);box-shadow:0 1px 12px var(--gw);margin-bottom:20px}
-.so-g{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
-.so-l{display:flex;flex-direction:column;gap:8px}
-.so-s{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--bd)}
-.so-s .son{font-size:24px;font-weight:800;color:var(--pri);min-width:55px}.so-s .sol{font-size:12px}.so-s .sol b{color:var(--acc);font-size:13px}
-.so-r{padding:14px 16px;background:linear-gradient(135deg,#F0FAF8,#E6F7F4);border-radius:12px;border:1px solid #B0DDD5}
-.so-r h4{font-size:14px;color:var(--pd);margin-bottom:8px}.so-r p{font-size:12px;margin-bottom:5px}
-.note{font-size:11px;color:var(--mu);font-style:italic;text-align:center;margin:12px 0}
-/* Cases V */
-.cv3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0}
-.cv{background:var(--cd);border-radius:12px;padding:18px 16px;border:1px solid var(--bd);display:flex;flex-direction:column;transition:box-shadow .2s;position:relative;overflow:hidden}.cv:hover{box-shadow:0 4px 18px var(--gw)}
-.cv::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
-.cv:nth-child(1)::before{background:linear-gradient(90deg,var(--acc),var(--ac2))}.cv:nth-child(2)::before{background:linear-gradient(90deg,var(--bl),var(--pl))}.cv:nth-child(3)::before{background:linear-gradient(90deg,var(--pu),#C084FC)}
-.cv .cvn{width:26px;height:26px;border-radius:8px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-bottom:6px}
-.cv h4{font-size:13px;font-weight:700;line-height:1.4;margin-bottom:5px}
-.cv .cvc{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
-.cv .cc{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px}
-.cc.g{background:#E6F7F4;color:#0A5C51}.cc.r{background:#FEF0ED;color:#B53D24}.cc.b{background:#E6F3FA;color:#0E6A8E}.cc.p{background:#F0ECFE;color:#6D3FC4}.cc.a{background:#FEF8E6;color:#92600A}
-.cv p{font-size:11px;flex:1;line-height:1.7}
-.cv .cvi{background:var(--bg);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--pd);font-weight:600;margin-top:7px;border-left:3px solid var(--pl)}
-/* EGUOO */
-.ego{margin:0}
-.ego-mods{display:grid;grid-template-columns:1fr 60px 1fr;gap:0;margin-bottom:0}
-.ego-mod{background:var(--cd);border-radius:14px;padding:20px;border:1px solid var(--bd);box-shadow:0 1px 10px var(--gw)}
-.ego-mod h4{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.ego-mod h4 .emi{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0}
-.ego-mod ul{list-style:none;padding:0}.ego-mod li{font-size:12px;padding:4px 0 4px 16px;position:relative;line-height:1.6}.ego-mod li::before{content:"•";position:absolute;left:0;color:var(--pl);font-weight:700}
-.ego-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.ego-arrow .arr-line{width:2px;height:20px;background:var(--ac2)}.ego-arrow .arr-plus{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--ac2),var(--acc));color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;box-shadow:0 2px 8px rgba(232,86,58,.3)}
-.ego-down{display:flex;justify-content:center;margin:12px 0}
-.ego-down .darr{display:flex;flex-direction:column;align-items:center}.ego-down .darr-line{width:2px;height:24px;background:linear-gradient(180deg,var(--ac2),var(--acc))}.ego-down .darr-tri{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid var(--acc)}
-.ego-out{background:linear-gradient(135deg,#FEF5F0,#FFF8F3);border:2px solid var(--ac2);border-radius:16px;padding:24px;box-shadow:0 2px 20px rgba(245,158,11,.12)}
-.ego-out h3{font-size:17px;color:#B8530F;font-weight:700;margin-bottom:14px;text-align:center}
-.ego-items{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.ego-it{text-align:center;padding:12px 8px;border-radius:10px;background:var(--cd);border:1px solid #F0DCC8}
-.ego-it .eit-icon{font-size:24px;margin-bottom:4px}
-.ego-it .eit-t{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:3px}
-.ego-it .eit-d{font-size:10px;color:var(--mu);line-height:1.5}
-.ego-link{text-align:center;margin-top:8px}
-.ego-link a{background:linear-gradient(135deg,var(--ac2),var(--acc));color:#fff;padding:8px 20px;border-radius:8px;font-size:13px;display:inline-block;transition:opacity .2s}.ego-link a:hover{opacity:.85;text-decoration:none}
-/* Highlights */
-.hl-g{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:14px 0}
-.hl{background:var(--cd);border-radius:12px;padding:18px;border:1px solid var(--bd);position:relative;overflow:hidden;transition:box-shadow .2s}.hl:hover{box-shadow:0 4px 16px var(--gw)}
-.hl::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
-.hl:nth-child(1)::before{background:linear-gradient(90deg,var(--pri),var(--pl))}.hl:nth-child(2)::before{background:linear-gradient(90deg,var(--acc),var(--ac2))}.hl:nth-child(3)::before{background:linear-gradient(90deg,var(--bl),#2BB5E0)}.hl:nth-child(4)::before{background:linear-gradient(90deg,var(--pu),#A78BFA)}
-.hl .hli{font-size:26px;margin-bottom:6px}.hl h4{font-size:14px;font-weight:700;color:var(--pd);margin-bottom:4px}.hl .hln{font-size:20px;font-weight:800;color:var(--pri);margin-bottom:3px}.hl p{font-size:11px}
-/* 纵横体系 */
-.sys-box{background:var(--cd);border-radius:16px;padding:28px;border:1px solid var(--bd);box-shadow:0 1px 16px var(--gw);margin:18px 0;position:relative;overflow:hidden}
-.sys-box::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pri),var(--pl),var(--bl),var(--ac2))}
-.sys-grid{display:grid;grid-template-columns:1fr 2px 1fr;gap:0}
-.sys-left{padding-right:24px}
-.sys-div{background:linear-gradient(180deg,var(--bd),transparent)}
-.sys-right{padding-left:24px}
-.sys-left h3,.sys-right h3{font-size:15px;font-weight:700;color:var(--pd);margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.ly2{border-radius:10px;padding:12px 14px;margin-bottom:8px;border:1px solid;display:flex;gap:10px;align-items:flex-start}
-.ly2 .lyi{font-size:20px;flex-shrink:0}.ly2 h4{font-size:12px;font-weight:700;margin-bottom:1px}.ly2 p{font-size:11px;line-height:1.6}
-.ly2.a{background:linear-gradient(135deg,#F0ECFE,#F8F6FF);border-color:#D8D0F5}.ly2.b{background:linear-gradient(135deg,#E6F7F4,#F0FAF8);border-color:#B0DDD5}.ly2.c{background:linear-gradient(135deg,#FEF8E6,#FFFCF0);border-color:#F0DCA0}
-.emp-item{border-radius:10px;padding:12px 14px;margin-bottom:8px;border:1px solid;display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.7}
-.emp-item .emp-icon{font-size:20px;flex-shrink:0;margin-top:2px}
-.emp-item h4{font-size:12px;font-weight:700;margin-bottom:1px}
-.emp-item p{font-size:11px;line-height:1.6}
-.emp-item.e1{background:linear-gradient(135deg,#E6F3FA,#F0F9FF);border-color:#B0D4E8}
-.emp-item.e2{background:linear-gradient(135deg,#FEF5F0,#FFF8F3);border-color:#F0DCC8}
-.emp-item.e3{background:linear-gradient(135deg,#F0ECFE,#F8F6FF);border-color:#D8D0F5}
-.emp-item:last-child{margin-bottom:0}
-.sys-summary{background:linear-gradient(135deg,var(--pd),var(--pri),var(--pl));color:#fff;border-radius:10px;padding:14px;margin-top:16px;text-align:center;font-size:14px;font-weight:700}
-.cl3{text-align:center;padding:44px 0 32px;position:relative}
-.cl3::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--pri),transparent)}
-.cl3 .q{font-size:20px;font-weight:700;color:var(--pd);font-style:italic;margin-top:16px}.cl3 .sg{font-size:12px;color:var(--mu);margin-top:10px}
-@media(max-width:768px){.fg,.so-g,.cv3,.hl-g,.ego-mods,.ego-items,.sys-grid{grid-template-columns:1fr}.chain{flex-wrap:wrap;justify-content:center}.ca0,.s3a{display:none}.ego-arrow{flex-direction:row}.ego-down{margin:8px 0}}
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#232e26" />
+    <title>以 OKR 为圆心的运营 × AI 协作操作系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <main id="presentation-stage" aria-label="公司级 AI 提效分享 HTML">
+        <div id="deck" aria-live="polite"></div>
 
-<div class="hd"><div class="ct"><h1>食品饮料 AI 落地实践</h1><div class="sub">从点状工具到体系化赋能</div><div class="meta">商消AI专项启动会 · 食品饮料一中心 · 2026年4月</div></div></div>
+        <div id="progress-track" aria-hidden="true">
+          <div id="progress-fill"></div>
+        </div>
 
-<!-- 1 全景 -->
-<section><div class="ct">
-<div class="sh"><h2><span class="d"></span>AI 应用全景：围绕客户广告营销全链路覆盖</h2><p>从商品选品 → 内容生产 → 广告投放 → 客户经营 → 复盘优化，AI已嵌入每一个关键环节</p></div>
-<div class="pan">
-<div class="chain">
-<div class="cn0 c1"><div class="ci0">📦</div><div class="cl0">商品选品</div></div><div class="ca0">→</div>
-<div class="cn0 c2"><div class="ci0">🎬</div><div class="cl0">内容生产</div></div><div class="ca0">→</div>
-<div class="cn0 c3"><div class="ci0">📊</div><div class="cl0">广告投放</div></div><div class="ca0">→</div>
-<div class="cn0 c4"><div class="ci0">🤝</div><div class="cl0">客户经营</div></div><div class="ca0">→</div>
-<div class="cn0 c5"><div class="ci0">📈</div><div class="cl0">复盘优化</div></div>
-</div>
-<div class="fg">
+        <nav id="slide-drawer" aria-label="页面目录" aria-hidden="true">
+          <div class="drawer-head">
+            <div>
+              <span class="ui-kicker">DECK MAP</span>
+              <h2>28 页内容骨架</h2>
+            </div>
+            <button class="icon-button" id="close-drawer" type="button" aria-label="关闭目录">×</button>
+          </div>
+          <div id="slide-list"></div>
+        </nav>
 
-<div class="fb sp"><div class="ft0">商品力</div>
-<div class="si"><div class="sn">趋势选品</div>
-<div class="sk"><b>能力：</b>AI用户需求洞察 → 趋势拓品 → 商品与平台人群消费痛点匹配</div>
-<div class="sk"><b>实现：</b>自研轻量化AI工具，场景化洞察分客群拓品方向，业务先行跑通标杆</div>
-<div class="sv"><span>💡 从「追爆品」→「让客户为平台开品」</span><span>📈 提升商品供给与人群匹配效率</span></div>
-<div class="steps3">
-<div class="s3"><div class="s3n">Step 1</div><div class="s3t">AI跑通MVP</div><div>行业内验证价值</div></div><div class="s3a">→</div>
-<div class="s3"><div class="s3n">Step 2</div><div class="s3t">方法论横向复制</div><div>铺开矩阵品经营</div></div><div class="s3a">→</div>
-<div class="s3"><div class="s3n">Step 3</div><div class="s3t">推动产品化</div><div>中台能力上线中</div></div>
-</div>
-<div class="slink">📎 成果：<a href="https://doc.weixin.qq.com/sheet/e3_AaEAUgbuAPUCNH0HI792HQlSI2F5f?scode=AJEAIQdfAAouEr0mlGAaEAUgbuAPU" target="_blank">食品Q1趋势品 →</a></div>
-</div></div>
+        <aside id="collab-panel" aria-label="讲稿、案例与协作评论" aria-hidden="true">
+          <div class="panel-head">
+            <div>
+              <span class="ui-kicker">COLLAB LAYER</span>
+              <h2 id="panel-title">当前页</h2>
+            </div>
+            <button class="icon-button" id="close-panel" type="button" aria-label="关闭协作面板">×</button>
+          </div>
 
-<div class="fb ct2"><div class="ft0">内容力</div>
-<div class="si"><div class="sn">创意素材分析</div>
-<div class="sk"><b>能力：</b>视频口播转录 + 画面逐帧拆解 + 用户流失节点诊断 + 方法论输出</div>
-<div class="sk"><b>实现：</b>Gemini API转录（BGM/语气/话术结构）→ 结构化数据 → 横向对比 → 策略建议</div>
-<div class="sv"><span>💡 从「凭感觉」→「数据拆解每一帧」</span><span>📈 创意优化有据可依</span></div>
-<div class="slink">📎 <a href="https://doc.weixin.qq.com/doc/w3_AM0A_AZiACICNuzpSLaQWQP6fQzQC?scode=AJEAIQdfAAoAxoXE9iAGYAPQbmACg" target="_blank">素材创意双周报 →</a> · <a href="https://doc.weixin.qq.com/doc/w3_AGYAPQbmACgCNPDj1XPUmSvyfQicE?scode=AJEAIQdfAAoYGikfccAGYAPQbmACg" target="_blank">Top素材深度拆解 →</a></div>
-</div>
-<div class="si"><div class="sn">直播间诊断</div>
-<div class="sk"><b>能力：</b>全程话术转写 + 人货场四维分析 + 六类话术策略对比 + 改进方案输出</div>
-<div class="sk"><b>实现：</b>多源转写(Whisper+阿里+火山, 98%准确率) → 智能校准 → 深度分析</div>
-<div class="sv"><span>💡 量化直播间问题→可落地改进方案</span><span>📈 可对标头部做「代际差异」级诊断</span></div>
-<div class="slink">📎 <a href="https://doc.weixin.qq.com/doc/w3_AfwA3Qb_AAYCNlgEq1AzmSgqCxXho?scode=AJEAIQdfAAoLhIVIeyAGYAPQbmACg" target="_blank">康富来深度诊断 →</a> · <a href="https://doc.weixin.qq.com/doc/w3_AGYAPQbmACgCNX13j0b00Tfu3cUsB?scode=AJEAIQdfAAoc1VJu1bAGYAPQbmACg" target="_blank">CVR人货场方法论 →</a></div>
-</div></div>
+          <div class="panel-status-row">
+            <label for="slide-status">页面状态</label>
+            <select id="slide-status">
+              <option value="skeleton">骨架视图</option>
+              <option value="draft">代表页草稿</option>
+              <option value="review">待 goinglin 审核</option>
+              <option value="approved">已确认</option>
+            </select>
+          </div>
 
-<div class="fb tf"><div class="ft0">投放力</div>
-<div class="si"><div class="sn">数据分析全链路</div>
-<div class="sk"><b>能力：</b>18个SKILL覆盖日报→周报→双周报→月报→客户复盘→掉量分析→专项分析</div>
-<div class="sk"><b>实现：</b>CodeBuddy SKILL体系，自然语言驱动，全链路自动化，持续迭代6期</div>
-<div class="sv"><span>💡 效率12-18x，复盘2-3h→10min</span><span>📈 分析维度3-5→13维全覆盖</span><span>🔄 可复制、新人即上手</span></div>
-<div class="slink">📎 <a href="https://doc.weixin.qq.com/doc/w3_AGYAPQbmACgCN9i8xuEIcQiuTZ0Bi?scode=AJEAIQdfAAoWCmZnVpAGYAPQbmACg" target="_blank">膳食营养每日早报 →</a></div>
-</div>
-<div class="si"><div class="sn">行业消耗波动诊断</div>
-<div class="sk"><b>能力：</b>上传CSV → 品牌映射 → 链路/出价/基建/成本四维归因 → 可视化报告</div>
-<div class="sk"><b>实现：</b>纯前端H5页面，双击即用，无需安装依赖</div>
-<div class="sv"><span>💡 实时定位掉量/爆量原因</span><span>📈 辅助当日快速决策</span></div>
-<div class="slink">📎 <a href="http://localhost:8765/../工具链/消耗波动诊断-肖恩版/index.html" target="_blank">消耗波动诊断工具 →</a></div>
-</div></div>
+          <div class="panel-tabs" role="tablist">
+            <button class="panel-tab is-active" data-tab="notes" type="button">讲稿原料</button>
+            <button class="panel-tab" data-tab="sources" type="button">案例与来源</button>
+            <button class="panel-tab" data-tab="comments" type="button">评论 <span id="comment-count">0</span></button>
+          </div>
 
-<div class="fb bp"><div class="ft0">品牌力</div>
-<div class="si"><div class="sn">客户营销方案</div>
-<div class="sk"><b>能力：</b>整合选品 + 创意分析 + 直播经营 + 投放链路深度复盘 → 个性化营销方案</div>
-<div class="sk"><b>实现：</b>AI完成80%分析整合，运营聚焦20%策略定制，每条建议有数据支撑</div>
-<div class="sv"><span>💡 有数据的定制方案，非泛泛建议</span><span>📈 先进经验+客户优势=深度方案</span></div>
-</div>
-<div class="si"><div class="sn">客户案例 One Page 制作</div>
-<div class="sk"><b>能力：</b>提供客户原始数据 + 希望讲述的重点 → 直接输出对客的案例OnePage</div>
-<div class="sk"><b>实现：</b>AI自动提炼核心数据亮点、投放策略、效果成果，生成仿PPT的可视化HTML案例页</div>
-<div class="sv"><span>💡 案例制作从半天→30分钟</span><span>📈 标准化输出，品质稳定可复制</span></div>
-<div class="slink">📎 案例：EGUOO · 五个女博士 · <a href="javascript:void(0)">农夫山泉春茶大场</a> · <a href="javascript:void(0)">原始黄金闭环投放</a></div>
-</div>
-<div class="si"><div class="sn">客户投放指引 · 鹅宝AI</div>
-<div class="sk"><b>能力：</b>内部策略→客户可读文档自动转化 · 行业化知识库+妙问能力双驱动</div>
-<div class="sk"><b>实现：</b>SKILL自动转化格式口径 · 鹅宝=行业知识库+妙问，妙问能答的都能答，还能回复行业化问题</div>
-<div class="sv"><span>💡 降低客户执行门槛</span><span>📈 缩短销售响应+行业专属回复</span></div>
-</div></div>
+          <section class="panel-view is-active" id="panel-notes" data-view="notes"></section>
+          <section class="panel-view" id="panel-sources" data-view="sources"></section>
+          <section class="panel-view" id="panel-comments" data-view="comments">
+            <div class="comment-compose">
+              <div id="comment-quote" hidden></div>
+              <textarea id="comment-input" rows="4" placeholder="写下本页的修改说明。若刚刚选中过文字，会自动带上引用。"></textarea>
+              <button class="primary-button" id="add-comment" type="button">添加本页评论</button>
+            </div>
+            <div id="comment-list"></div>
+          </section>
+        </aside>
 
-</div></div>
-</div></section>
+        <div id="toolbar-reveal-zone" aria-hidden="true"></div>
+        <div id="editor-toolbar" role="toolbar" aria-label="页面编辑工具">
+          <button id="open-drawer" type="button" title="打开28页目录">目录</button>
+          <span class="toolbar-divider"></span>
+          <button id="prev-slide" type="button" title="上一页（←）">←</button>
+          <span id="toolbar-counter">01 / 28</span>
+          <button id="next-slide" type="button" title="下一页（→）">→</button>
+          <span class="toolbar-divider"></span>
+          <button id="toggle-edit" type="button" title="编辑文字（E）">编辑</button>
+          <button id="font-down" type="button" title="缩小选中文字">A−</button>
+          <button id="font-up" type="button" title="放大选中文字">A+</button>
+          <button id="toggle-bold" type="button" title="加粗或取消加粗选中文字（⌘/Ctrl+B）">B</button>
+          <button id="reset-slide" type="button" title="撤销当前页的浏览器内文字修改">重置本页</button>
+          <span class="toolbar-divider"></span>
+          <button id="open-notes" type="button" title="讲稿原料（N）">讲稿</button>
+          <button id="open-comments" type="button" title="页面评论（C）">评论</button>
+          <span class="toolbar-divider"></span>
+          <button id="export-pack" type="button" title="导出文字修改、状态与评论">导出修改包</button>
+          <button id="import-pack" type="button" title="导入其他人的修改包">导入</button>
+          <button id="present-mode" type="button" title="演示模式（F）">演示</button>
+        </div>
 
-<!-- 2 SKILL -->
-<section style="background:#fff"><div class="ct">
-<div class="sh"><h2><span class="d"></span>深度案例：客户数据分析 SKILL 体系</h2><p>18个SKILL + 5个Rule · 两个月从零到体系化运行 · 覆盖11个客户</p></div>
+        <input id="import-file" type="file" accept="application/json" hidden />
+        <div id="toast" role="status" aria-live="polite"></div>
 
-<div class="skill-ov">
-<h3 style="font-size:16px;color:var(--pd);margin-bottom:2px">体系概览与成果</h3>
-<p style="font-size:12px;color:var(--mu);margin-bottom:12px">从第一个SKILL到全链路体系仅两个月，持续迭代6期，越搭越快——新SKILL从首版到可用仅需1-2天</p>
-<div class="so-g">
-<div class="so-l">
-<div class="so-s"><div class="son">180+</div><div class="sol">份分析报告产出（2个月）<br>客户复盘148 · 早报9 · 双周报6 · 月报3 · 指引11 · 专项8</div></div>
-<div class="so-s"><div class="son">11</div><div class="sol">个客户实战覆盖<br>诺特兰德·华大·万益蓝·多燕瘦·五个女博士·保元德·养能健等</div></div>
-<div class="so-s"><div class="son">📈</div><div class="sol">效率提升，赛道数据分析自动化，复盘报告深度化<br>复盘 <b>4-5h→15min</b> · 每日早报 <b>缺失→自动化生成</b> · 掉量 <b>2h→自动化生成</b></div></div>
-<div style="font-size:10px;color:#aab;font-style:italic;margin-top:4px">* 以上数据仅为食品中心内部 · 健康膳食单一赛道的应用情况</div>
-</div>
-<div class="so-r">
-<h4>🔄 SKILL延展方式：通用底座 + 个性化扩展</h4>
-<p><b>通用底座：</b>ad-analysis-fundamentals Rule 定义统一指标计算、ROI口径、结论先行原则</p>
-<p><b>场景扩展：</b>日报SKILL → 加「趋势信号」→ 周报 → 加「行业对比」→ 双周报，越搭越快</p>
-<p><b>个性化分析：</b>在通用复盘基础上，根据客户具体问题快速产出深度分析（如下方案例）</p>
-<p style="color:var(--pri);font-weight:700;margin-top:4px">→ 新场景从首版到可用仅需1-2天，体系越用越厚</p>
-</div>
-</div></div>
+        <div id="output-sample-modal" class="output-sample-modal" role="dialog" aria-modal="true" aria-labelledby="output-sample-title" aria-hidden="true">
+          <div class="output-sample-backdrop" data-close-output-sample></div>
+          <section class="output-sample-dialog" role="document">
+            <div class="output-sample-bar">
+              <p id="output-sample-title">实际输出样例</p>
+              <button id="close-output-sample" type="button" aria-label="关闭实际输出样例">×</button>
+            </div>
+            <img id="output-sample-image" src="" alt="" />
+          </section>
+        </div>
+      </main>
+    </div>
 
-<h3 style="font-size:16px;color:var(--pd);margin-bottom:3px">个性化深度分析案例</h3>
-<p style="font-size:12px;color:var(--mu);margin-bottom:12px">在通用SKILL基础上，运营提出分析思路 → AI快速高效地通过数据实现精细化归因</p>
-<div class="cv3">
-<div class="cv"><div class="cvn">1</div>
-<h4>华大营养掉量归因<br><span style="font-weight:400;font-size:11px;color:var(--mu)">版位结构 × CPM 交叉诊断</span></h4>
-<div class="cvc"><span class="cc r">-25% 消耗</span><span class="cc b">CPM 345→401</span><span class="cc g">V1→V2 修正</span></div>
-<p>AI第一版结论「CTR下降」。运营判断需按版位拆分——发现视频号CTR其实在涨，真正原因是CPM飙升。AI快速修正产出V2。</p>
-<div class="cvi">运营定方向 + AI快速算 → 发现人工难兼顾的深层问题</div></div>
-
-<div class="cv"><div class="cvn">2</div>
-<h4>万益蓝 × 华大<br><span style="font-weight:400;font-size:11px;color:var(--mu)">跨客户关联 + 掉量归因</span></h4>
-<div class="cvc"><span class="cc r">掉量时段</span><span class="cc a">= 竞品放量</span><span class="cc p">跨客户归因</span></div>
-<p>运营提出假设：掉量可能与同赛道竞品放量有关。AI快速跑出数据验证——万益蓝掉量与华大减肥直播间放量时段高度吻合。</p>
-<div class="cvi">运营的分析思路 + AI的高效验证 → 精细化归因</div>
-<a href="https://doc.weixin.qq.com/doc/w3_AGYAPQbmACgCNwVxvGM8hTdaYeewI?scode=AJEAIQdfAAossD5VHuAGYAPQbmACg" target="_blank" style="font-size:11px;margin-top:4px;display:inline-block">查看完整报告 →</a></div>
-
-<div class="cv"><div class="cvn">3</div>
-<h4>万益蓝 · 诺特兰德 · 华大<br><span style="font-weight:400;font-size:11px;color:var(--mu)">小店直购链路专项</span></h4>
-<div class="cvc"><span class="cc b">商品外溢</span><span class="cc a">组货建议</span><span class="cc g">→ 通用框架</span></div>
-<p>银发直购外溢分析首创于万益蓝，在诺特兰德验证通用性；华大低客单出价调优与组货建议——个性化需求快速产出。</p>
-<div class="cvi">通用底座 + 链路专项个性化 → 沉淀为可复制框架</div>
-<a href="https://doc.weixin.qq.com/doc/w3_AGYAPQbmACgCNNt8VJWoySXmmM1Mk?scode=AJEAIQdfAAoQetH4iVAGYAPQbmACg" target="_blank" style="font-size:11px;margin-top:4px;display:inline-block">银发直购 →</a>
-<a href="https://doc.weixin.qq.com/doc/w3_AGYAPQbmACgCNR5Cg43aJTJOHWxQs?scode=AJEAIQdfAAouWQtngOAGYAPQbmACg" target="_blank" style="font-size:11px;margin-top:4px;display:inline-block;margin-left:6px">华大分析 →</a></div>
-</div>
-</div></section>
-
-<!-- 3 EGUOO -->
-<section><div class="ct">
-<div class="sh"><h2><span class="d"></span>深度案例：先进经验 × 客户优势 = 个性化营销方案（EGUOO）</h2><p>AI将赛道先进经验与客户已验证的数据优势整合，输出有数据支撑的定制化方案</p></div>
-
-<div style="background:#FFF8F3;border:1px solid #F0DCC8;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:12px;line-height:1.7">
-<b style="color:#B8530F">📌 背景：</b>EGUOO 是海外保健食品客户，原有链路主投 CID + UDS + JDS，在外跳链路已跑出成熟模型。现准备拓展膳食品 × 闭环链路（直播+小店直购），但遇到<b>投放不起量</b>问题——直播日均消耗仅400元，远未度过冷启动。
-</div>
-
-<div class="ego">
-<!-- 双模块 -->
-<div class="ego-mods">
-<div class="ego-mod">
-<h4><span class="emi" style="background:var(--pri)">🏆</span> 赛道先进经验输入</h4>
-<ul>
-<li>膳食赛道 <b>14个头部直播间</b> 人货场方法论总结</li>
-<li>头部客户（多燕瘦/华大/诺特兰德/万益蓝）<b>投放基建对标数据</b></li>
-<li>赛道Top素材创意拆解 — <b>9种钩子策略图谱</b></li>
-<li>智投工具最佳实践（短直双开/推直播/直播快推）</li>
-<li>膳食赛道直播间 <b>CVR人货场方法论</b></li>
-</ul>
-</div>
-<div class="ego-arrow">
-<div class="arr-line"></div>
-<div class="arr-plus">+</div>
-<div class="arr-line"></div>
-</div>
-<div class="ego-mod">
-<h4><span class="emi" style="background:var(--ac2)">⭐</span> EGUOO 自身已验证优势</h4>
-<ul>
-<li>CID链路7大品类已验证：消化酶 <b>CVR 7.13%</b>（全品类第一）</li>
-<li>养肝护肝 <b>ROI 1.362</b>（已盈利），纳豆 <b>CTR 3.72%</b>（引流最强）</li>
-<li>冠军运动员背书素材3s完播率 <b>65.5%</b>（全品牌最高）</li>
-<li>已积累 <b>356+条素材资产</b>，9种钩子策略数据验证完成</li>
-<li>CID链路 <b>全品类ROI>1</b>，多品类已验证盈利模型</li>
-</ul>
-</div>
-</div>
-
-<!-- 向下箭头 -->
-<div class="ego-down"><div class="darr"><div class="darr-line"></div><div class="darr-tri"></div></div></div>
-
-<!-- 整合输出 -->
-<div class="ego-out">
-<h3>📋 EGUOO 直播链路拓展营销方案 V2</h3>
-<div class="ego-items">
-<div class="ego-it">
-<div class="eit-icon">📦</div>
-<div class="eit-t">选品策略</div>
-<div class="eit-d">三阶段路线图<br>冷启动「一主两翼」<br>→ 放量期5品类<br>→ 矩阵拓展组合套餐</div>
-</div>
-<div class="ego-it">
-<div class="eit-icon">🎬</div>
-<div class="eit-t">素材脚本</div>
-<div class="eit-d">分品类脚本模板<br>5种高效钩子轮换<br>冠军背书+差异化BGM<br>每条素材不同钩子</div>
-</div>
-<div class="ego-it">
-<div class="eit-icon">🎙️</div>
-<div class="eit-t">话术体系</div>
-<div class="eit-d">5-7min标准循环<br>钩子→痛点→塑品<br>→开价→逼单<br>人设：海外健康顾问</div>
-</div>
-<div class="ego-it">
-<div class="eit-icon">📊</div>
-<div class="eit-t">投放基建</div>
-<div class="eit-d">4大智投工具组合<br>短直双开40%+推直播20%<br>版位集中视频号60%+<br>4周冲刺日耗0→8万+</div>
-</div>
-</div>
-<div class="ego-link"><a href="https://doc.weixin.qq.com/doc/w3_AGYAPQbmACgCN8KLWy39VSyekEpEg?scode=AJEAIQdfAAoTT0NAo4AGYAPQbmACg" target="_blank">查看完整方案 →</a></div>
-</div>
-</div>
-</div></section>
-
-<!-- 4 亮点+体系 -->
-<section style="background:#fff"><div class="ct">
-<div class="sh"><h2><span class="d"></span>核心亮点与体系化沉淀</h2></div>
-
-<div class="hl-g">
-<div class="hl"><div class="hli">🌐</div><h4>全链路覆盖</h4><div class="hln">四力 × 8+ 场景 × 5+ 角色</div><p>唯一实现AI全工作链路覆盖的行业中心。从商品选品到投放到经营，每个环节都有AI在跑。多角色参与，不是一个人在玩。</p></div>
-<div class="hl"><div class="hli">⚡</div><h4>效率提升 · 数据分析自动化</h4><div class="hln">180+ 报告 · 复盘深度化</div><p>两个月180+份真实产出。复盘4-5h→15min，每日早报和掉量分析实现自动化生成。更重要的是分析深度——3-5维→13维全覆盖。</p></div>
-<div class="hl"><div class="hli">🔄</div><h4>可复制体系</h4><div class="hln">18 SKILL + 5 Rule + 验收机制</div><p>有架构V3、有规范、有验收机制、有V6版指南。新人装上SKILL读完指南即上手。已完成内部分享与SKILL分发，新场景1-2天即可搭建。</p></div>
-<div class="hl"><div class="hli">🎯</div><h4>深度应用 · 从提效到提收</h4><div class="hln">11 客户 · 个性化方案</div><p>选品工具已推产品化，直播诊断产出改进方案，EGUOO案例验证「先进经验+客户优势→个性化方案」路径，正在从提效走向提收。</p></div>
-</div>
-<div style="font-size:10px;color:#aab;font-style:italic;margin-top:6px">* 以上数据仅为食品中心内部 · 健康膳食单一赛道的应用情况</div>
-
-<!-- 纵横体系 -->
-<div class="sys-box">
-<div class="sys-grid">
-<div class="sys-left">
-<h3>📐 纵向：三层沉淀</h3>
-<div class="ly2 a"><div class="lyi">🏛️</div><div><h4>知识资产层</h4><p>200+业务术语库 · 11个客户档案 · 品牌映射 · 品类规则 · 分析方法论（全店归因拆分、跨客户关联）</p></div></div>
-<div class="ly2 b"><div class="lyi">📐</div><div><h4>方法论与标准层</h4><p>SKILL架构V3 · 5个Rule规范 · 独立验收机制 · V6版使用指南 · 6期周回顾持续迭代</p></div></div>
-<div class="ly2 c"><div class="lyi">🔧</div><div><h4>工具层</h4><p>18个场景SKILL · H5诊断工具 · AI选品MVP · 直播分析器 · 创意分析 · 案例生成器</p></div></div>
-</div>
-<div class="sys-div"></div>
-<div class="sys-right">
-<h3>🔗 横向：赋能平台</h3>
-<div class="emp-item e1"><div class="emp-icon">🤝</div><div><h4>赋能 AData 团队</h4><p>辅助AData团队理解运营最高频场景——客户复盘、赛道日报、双周报的完整分析逻辑和输出标准，帮助产品侧准确理解业务需求</p></div></div>
-<div class="emp-item e2"><div class="emp-icon">🏪</div><div><h4>上线 AMS AData Skill 市集</h4><p>核心数据分析Skill（客户复盘、赛道日报、赛道双周报）已上线到腾讯广告AMS平台Skill市集，赋能更多行业团队使用</p></div></div>
-<div class="emp-item e3"><div class="emp-icon">📖</div><div><h4>方法论可复制输出</h4><p>V6版SKILL使用指南已作为内部培训材料发布，其他赛道可参照搭建自己的SKILL<br><a href="https://doc.weixin.qq.com/doc/w3_AGYAPQbmACgCNtYqlj4dWR3qzIhfw?scode=AJEAIQdfAAo4awFrvDAGYAPQbmACg" target="_blank" style="font-size:11px;margin-top:3px;display:inline-block">查看SKILL使用指南 →</a></p></div></div>
-</div>
-</div>
-<div class="sys-summary">从个人工具 → 团队标准 → 平台能力 —— SKILL体系的价值正在逐步放大</div>
-</div>
-
-</div></section>
-
-<div class="cl3"><div class="ct"><div class="q">「当别人还在讨论 AI 能做什么，我们已经用 AI 做出了什么。」</div><div class="sg">食品饮料一中心 · 2026年4月</div></div></div>
-
-</body>
+    <script src="content.js"></script>
+    <script src="p1-p8-evening-overrides.js"></script>
+    <script src="p9-p28-evening-overrides.js"></script>
+    <script src="p12-claim-fix.js"></script>
+    <script src="p13-force-order-fix.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
