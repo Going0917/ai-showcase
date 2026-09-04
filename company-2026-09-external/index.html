@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#232e26" />
+    <title>以 OKR 为圆心的运营 × AI 协作操作系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <main id="presentation-stage" aria-label="公司级 AI 提效分享 HTML">
+        <div id="deck" aria-live="polite"></div>
+
+        <div id="progress-track" aria-hidden="true">
+          <div id="progress-fill"></div>
+        </div>
+
+        <nav id="slide-drawer" aria-label="页面目录" aria-hidden="true">
+          <div class="drawer-head">
+            <div>
+              <span class="ui-kicker">DECK MAP</span>
+              <h2>28 页内容骨架</h2>
+            </div>
+            <button class="icon-button" id="close-drawer" type="button" aria-label="关闭目录">×</button>
+          </div>
+          <div id="slide-list"></div>
+        </nav>
+
+        <aside id="collab-panel" aria-label="讲稿、案例与协作评论" aria-hidden="true">
+          <div class="panel-head">
+            <div>
+              <span class="ui-kicker">COLLAB LAYER</span>
+              <h2 id="panel-title">当前页</h2>
+            </div>
+            <button class="icon-button" id="close-panel" type="button" aria-label="关闭协作面板">×</button>
+          </div>
+
+          <div class="panel-status-row">
+            <label for="slide-status">页面状态</label>
+            <select id="slide-status">
+              <option value="skeleton">骨架视图</option>
+              <option value="draft">代表页草稿</option>
+              <option value="review">待 goinglin 审核</option>
+              <option value="approved">已确认</option>
+            </select>
+          </div>
+
+          <div class="panel-tabs" role="tablist">
+            <button class="panel-tab is-active" data-tab="notes" type="button">讲稿原料</button>
+            <button class="panel-tab" data-tab="sources" type="button">案例与来源</button>
+            <button class="panel-tab" data-tab="comments" type="button">评论 <span id="comment-count">0</span></button>
+          </div>
+
+          <section class="panel-view is-active" id="panel-notes" data-view="notes"></section>
+          <section class="panel-view" id="panel-sources" data-view="sources"></section>
+          <section class="panel-view" id="panel-comments" data-view="comments">
+            <div class="comment-compose">
+              <div id="comment-quote" hidden></div>
+              <textarea id="comment-input" rows="4" placeholder="写下本页的修改说明。若刚刚选中过文字，会自动带上引用。"></textarea>
+              <button class="primary-button" id="add-comment" type="button">添加本页评论</button>
+            </div>
+            <div id="comment-list"></div>
+          </section>
+        </aside>
+
+        <div id="toolbar-reveal-zone" aria-hidden="true"></div>
+        <div id="editor-toolbar" role="toolbar" aria-label="页面编辑工具">
+          <button id="open-drawer" type="button" title="打开28页目录">目录</button>
+          <span class="toolbar-divider"></span>
+          <button id="prev-slide" type="button" title="上一页（←）">←</button>
+          <span id="toolbar-counter">01 / 28</span>
+          <button id="next-slide" type="button" title="下一页（→）">→</button>
+          <span class="toolbar-divider"></span>
+          <button id="toggle-edit" type="button" title="编辑文字（E）">编辑</button>
+          <button id="font-down" type="button" title="缩小选中文字">A−</button>
+          <button id="font-up" type="button" title="放大选中文字">A+</button>
+          <button id="toggle-bold" type="button" title="加粗或取消加粗选中文字（⌘/Ctrl+B）">B</button>
+          <button id="reset-slide" type="button" title="撤销当前页的浏览器内文字修改">重置本页</button>
+          <span class="toolbar-divider"></span>
+          <button id="open-notes" type="button" title="讲稿原料（N）">讲稿</button>
+          <button id="open-comments" type="button" title="页面评论（C）">评论</button>
+          <span class="toolbar-divider"></span>
+          <button id="export-pack" type="button" title="导出文字修改、状态与评论">导出修改包</button>
+          <button id="import-pack" type="button" title="导入其他人的修改包">导入</button>
+          <button id="present-mode" type="button" title="演示模式（F）">演示</button>
+        </div>
+
+        <input id="import-file" type="file" accept="application/json" hidden />
+        <div id="toast" role="status" aria-live="polite"></div>
+
+        <div id="output-sample-modal" class="output-sample-modal" role="dialog" aria-modal="true" aria-labelledby="output-sample-title" aria-hidden="true">
+          <div class="output-sample-backdrop" data-close-output-sample></div>
+          <section class="output-sample-dialog" role="document">
+            <div class="output-sample-bar">
+              <p id="output-sample-title">实际输出样例</p>
+              <button id="close-output-sample" type="button" aria-label="关闭实际输出样例">×</button>
+            </div>
+            <img id="output-sample-image" src="" alt="" />
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="content.js"></script>
+    <script src="p1-p8-evening-overrides.js"></script>
+    <script src="p9-p28-evening-overrides.js"></script>
+    <script src="p12-claim-fix.js"></script>
+    <script src="p13-force-order-fix.js"></script>
+    <script src="app.js"></script>
+    <script src="external-redaction.js"></script>
+  </body>
+</html>
